@@ -1,0 +1,121 @@
+# =====================================================================
+# ALL model numbers live here. Nothing numeric is hard-coded in the code.
+# Each parameter: value, unit, min/max (sensible range), note.
+# Notes start with ASSUMPTION (placeholder - replace with measured data)
+# or ASSUMPTION (verify: <where to check>). Replace these with cited
+# values (datasheets, IS 10500, EPA UVDGM, textbooks) for your report.
+# Internal units: L/h, L, mg/L, NTU, degC, bar, log10 CFU/mL.
+# =====================================================================
+
+general:
+  ntu_to_tss_mgl: {value: 2.0, unit: "mg/L per NTU", min: 1.0, max: 3.0, note: "ASSUMPTION: turbidity->suspended solids factor; site specific. Only affects clogging and sludge mass."}
+  bacteria_floor_log: {value: -3.0, unit: "log10 CFU/mL", min: -4.0, max: 0.0, note: "Model convention: reporting floor (0.001 CFU/mL = 1 CFU/L)."}
+
+plant:
+  ro_feed_flow_lph: {value: 2000, unit: "L/h", min: 200, max: 5000, note: "ASSUMPTION: dialysis RO feed flow. Use the hospital RO nameplate."}
+  ro_recovery: {value: 0.50, unit: fraction, min: 0.30, max: 0.75, note: "ASSUMPTION (verify: RO system datasheet)."}
+  ro_hours_per_day: {value: 12, unit: h, min: 4, max: 24, note: "ASSUMPTION: hours/day the dialysis RO runs."}
+  ro_start_hour: {value: 6, unit: "hour of day", min: 0, max: 23, note: "ASSUMPTION: RO start time."}
+  treatment_flow_lph: {value: 800, unit: "L/h", min: 100, max: 3000, note: "DESIGN CHOICE: pump flow through the reject treatment train."}
+  collection_tank_l: {value: 3000, unit: L, min: 500, max: 10000, note: "DESIGN CHOICE."}
+  treated_tank_l: {value: 5000, unit: L, min: 500, max: 20000, note: "DESIGN CHOICE."}
+  reuse_tank_l: {value: 3000, unit: L, min: 500, max: 20000, note: "DESIGN CHOICE: non-potable reuse tank."}
+  pump_start_level: {value: 0.10, unit: fraction, min: 0.02, max: 0.90, note: "Collection tank level at which the treatment pump starts."}
+  pump_stop_level: {value: 0.02, unit: fraction, min: 0.0, max: 0.50, note: "Collection tank level at which the treatment pump stops."}
+  transfer_rate_lph: {value: 1500, unit: "L/h", min: 100, max: 5000, note: "DESIGN CHOICE: treated tank -> reuse tank transfer pump."}
+  reuse_refill_level: {value: 0.90, unit: fraction, min: 0.10, max: 1.0, note: "Transfer runs while reuse tank is below this level."}
+  demand_l_per_day: {value: 10600, unit: "L/day", min: 0, max: 30000, note: "ASSUMPTION: non-potable demand (flushing, cleaning, gardening)."}
+  demand_start_hour: {value: 8, unit: "hour of day", min: 0, max: 23, note: "ASSUMPTION: demand window start."}
+  demand_end_hour: {value: 18, unit: "hour of day", min: 1, max: 24, note: "ASSUMPTION: demand window end."}
+
+source:
+  feed_tds_mgl: {value: 300, unit: mg/L, min: 100, max: 800, note: "ASSUMPTION (verify: municipal water quality report)."}
+  feed_hardness_mgl: {value: 200, unit: "mg/L as CaCO3", min: 50, max: 400, note: "ASSUMPTION (verify: municipal report)."}
+  feed_ca_hardness_mgl: {value: 120, unit: "mg/L as CaCO3", min: 30, max: 300, note: "ASSUMPTION (verify: municipal report). Used in LSI."}
+  feed_alkalinity_mgl: {value: 150, unit: "mg/L as CaCO3", min: 50, max: 300, note: "ASSUMPTION (verify: municipal report). Used in LSI."}
+  feed_ph: {value: 7.5, unit: pH, min: 6.8, max: 8.3, note: "ASSUMPTION (verify: municipal report)."}
+  feed_chloride_mgl: {value: 60, unit: mg/L, min: 20, max: 250, note: "ASSUMPTION (verify: municipal report)."}
+  feed_silica_mgl: {value: 15, unit: mg/L, min: 5, max: 40, note: "ASSUMPTION (verify: municipal report)."}
+  temp_c: {value: 25, unit: degC, min: 15, max: 35, note: "ASSUMPTION."}
+  feed_turbidity_ntu: {value: 0.3, unit: NTU, min: 0.1, max: 1.0, note: "ASSUMPTION: turbidity after the dialysis RO pretreatment."}
+  ro_salt_rejection: {value: 0.97, unit: fraction, min: 0.95, max: 0.99, note: "ASSUMPTION (verify: RO membrane datasheet, with its test conditions)."}
+  ro_particle_rejection: {value: 0.99, unit: fraction, min: 0.95, max: 0.999, note: "ASSUMPTION: RO membrane rejects particles almost completely."}
+  reject_ph_shift: {value: 0.2, unit: pH, min: 0.0, max: 0.5, note: "ASSUMPTION: reject pH is slightly above feed pH."}
+  reject_toc_mgl: {value: 3.0, unit: mg/L, min: 0.5, max: 10.0, note: "ASSUMPTION: weakest guess. Measure if possible."}
+  reject_chlorine_mgl: {value: 0.02, unit: mg/L, min: 0.0, max: 0.2, note: "ASSUMPTION: dialysis carbon bed removes chlorine upstream."}
+  reject_bacteria_log: {value: 2.7, unit: "log10 CFU/mL", min: 0.0, max: 5.0, note: "ASSUMPTION: ~500 CFU/mL heterotrophic plate count; biofilm dependent, weak guess."}
+
+stages:
+  equalisation:
+    max_turbidity_removal: {value: 0.15, unit: fraction, min: 0.0, max: 0.30, note: "ASSUMPTION (verify: textbook, e.g. Crittenden et al., sedimentation chapter)."}
+    reference_hrt_h: {value: 1.0, unit: h, min: 0.25, max: 6.0, note: "ASSUMPTION: retention time needed for full settling benefit."}
+    turbidity_floor_ntu: {value: 0.05, unit: NTU, min: 0.0, max: 0.5, note: "Lowest turbidity settling can achieve."}
+  mmf:
+    turbidity_removal: {value: 0.60, unit: fraction, min: 0.40, max: 0.90, note: "ASSUMPTION (verify: media filter datasheet)."}
+    turbidity_floor_ntu: {value: 0.10, unit: NTU, min: 0.0, max: 0.5, note: "ASSUMPTION."}
+    max_inlet_turbidity_ntu: {value: 50, unit: NTU, min: 5, max: 200, note: "Model validity limit; a warning is raised above this."}
+    backwash_interval_h: {value: 24, unit: "operating h", min: 12, max: 72, note: "ASSUMPTION (verify: media filter datasheet)."}
+    backwash_loss_frac: {value: 0.03, unit: fraction, min: 0.02, max: 0.05, note: "ASSUMPTION: backwash water as fraction of throughput (amortised)."}
+    dp_clean_bar: {value: 0.20, unit: bar, min: 0.05, max: 0.5, note: "ASSUMPTION."}
+    dp_limit_bar: {value: 0.80, unit: bar, min: 0.3, max: 1.5, note: "ASSUMPTION: triggers early backwash."}
+    solids_capacity_g: {value: 25, unit: "g per cycle", min: 5, max: 500, note: "ASSUMPTION: solids held before dp limit."}
+  carbon:
+    fresh_toc_removal: {value: 0.40, unit: fraction, min: 0.30, max: 0.60, note: "ASSUMPTION (verify: carbon vendor data / literature)."}
+    chlorine_removal: {value: 0.95, unit: fraction, min: 0.90, max: 0.99, note: "ASSUMPTION (verify: NSF/ANSI 42 data sheet)."}
+    bed_volume_l: {value: 110, unit: L, min: 20, max: 1000, note: "DESIGN CHOICE: gives about 8 min EBCT at 800 L/h."}
+    ebct_ref_min: {value: 8.0, unit: min, min: 5.0, max: 15.0, note: "Contact time at which fresh removal is reached; shorter contact reduces removal."}
+    bed_life_days: {value: 180, unit: days, min: 90, max: 365, note: "ASSUMPTION: sets bed capacity from design TOC load."}
+    replace_at_saturation: {value: 0.95, unit: fraction, min: 0.5, max: 1.0, note: "Bed is replaced when this fraction of capacity is used."}
+  cartridge_5um:
+    turbidity_removal: {value: 0.40, unit: fraction, min: 0.30, max: 0.50, note: "ASSUMPTION (verify: cartridge datasheet)."}
+    turbidity_floor_ntu: {value: 0.05, unit: NTU, min: 0.0, max: 0.5, note: "ASSUMPTION."}
+    bacteria_lrv: {value: 0.0, unit: log10, min: 0.0, max: 1.0, note: "5 um nominal rating gives no bacteria credit."}
+    dp_clean_bar: {value: 0.05, unit: bar, min: 0.02, max: 0.1, note: "ASSUMPTION."}
+    dp_limit_bar: {value: 1.0, unit: bar, min: 0.7, max: 1.5, note: "ASSUMPTION: replace at this dp."}
+    solids_capacity_g: {value: 150, unit: g, min: 20, max: 1000, note: "ASSUMPTION: dirt holding capacity."}
+    life_days: {value: 60, unit: days, min: 30, max: 90, note: "ASSUMPTION: calendar replacement."}
+  candle_05um:
+    turbidity_removal: {value: 0.80, unit: fraction, min: 0.70, max: 0.90, note: "ASSUMPTION (verify: candle filter datasheet)."}
+    turbidity_floor_ntu: {value: 0.03, unit: NTU, min: 0.0, max: 0.5, note: "ASSUMPTION."}
+    bacteria_lrv: {value: 0.5, unit: log10, min: 0.0, max: 2.0, note: "ASSUMPTION: conservative partial bacteria removal."}
+    dp_clean_bar: {value: 0.05, unit: bar, min: 0.02, max: 0.1, note: "ASSUMPTION."}
+    dp_limit_bar: {value: 1.0, unit: bar, min: 0.7, max: 1.5, note: "ASSUMPTION: replace at this dp."}
+    solids_capacity_g: {value: 120, unit: g, min: 20, max: 1000, note: "ASSUMPTION."}
+    life_days: {value: 60, unit: days, min: 30, max: 90, note: "ASSUMPTION."}
+  uf:
+    turbidity_removal: {value: 0.97, unit: fraction, min: 0.95, max: 0.99, note: "ASSUMPTION (verify: UF membrane datasheet)."}
+    turbidity_floor_ntu: {value: 0.02, unit: NTU, min: 0.0, max: 0.1, note: "ASSUMPTION: typical UF filtrate turbidity."}
+    bacteria_lrv: {value: 5.0, unit: log10, min: 4.0, max: 6.0, note: "ASSUMPTION (verify: UF datasheet / validation report)."}
+    tds_rejection: {value: 0.0, unit: fraction, min: 0.0, max: 0.02, note: "UF does not remove dissolved salts."}
+    recovery: {value: 0.92, unit: fraction, min: 0.90, max: 0.95, note: "ASSUMPTION: net recovery after backwash/flush."}
+    membrane_area_m2: {value: 9.0, unit: m2, min: 1.0, max: 100.0, note: "DESIGN CHOICE: about 80 L/m2/h at design flow."}
+    max_flux_lmh: {value: 120, unit: "L/m2/h", min: 50, max: 200, note: "Warning if flux exceeds this."}
+    tmp_clean_bar: {value: 0.30, unit: bar, min: 0.1, max: 0.6, note: "ASSUMPTION."}
+    tmp_limit_bar: {value: 1.0, unit: bar, min: 0.6, max: 2.0, note: "ASSUMPTION: chemical clean at this TMP."}
+    solids_capacity_g: {value: 400, unit: g, min: 50, max: 5000, note: "ASSUMPTION: solids between chemical cleans."}
+  uv:
+    design_dose_mj_cm2: {value: 40, unit: "mJ/cm2", min: 30, max: 80, note: "ASSUMPTION (verify: UV unit datasheet; NSF/ANSI 55 Class A = 40)."}
+    design_flow_lph: {value: 750, unit: "L/h", min: 100, max: 3000, note: "Flow at which the unit delivers the design dose."}
+    uvt_design_pct: {value: 95, unit: "% at 254 nm", min: 85, max: 98, note: "UV transmittance the dose is rated at."}
+    uvt_clean_pct: {value: 97, unit: "%", min: 90, max: 99, note: "ASSUMPTION: transmittance of very clean water."}
+    uv_abs_per_toc: {value: 0.8, unit: "% per mg/L", min: 0.0, max: 3.0, note: "ASSUMPTION: transmittance lost per mg/L TOC."}
+    uv_abs_per_ntu: {value: 1.5, unit: "% per NTU", min: 0.0, max: 5.0, note: "ASSUMPTION: transmittance lost per NTU."}
+    lamp_life_h: {value: 9000, unit: h, min: 5000, max: 16000, note: "ASSUMPTION (verify: lamp datasheet)."}
+    lamp_end_factor: {value: 0.80, unit: fraction, min: 0.7, max: 1.0, note: "Output at end of lamp life vs new."}
+    fouling_factor: {value: 0.90, unit: fraction, min: 0.8, max: 1.0, note: "ASSUMPTION: quartz sleeve fouling."}
+    dose_response: {value: [[0, 0], [10, 1], [20, 2], [30, 3], [40, 4], [60, 5], [80, 6]], unit: "mJ/cm2 -> log10", note: "ASSUMPTION: placeholder bacteria curve. Replace with EPA UV Disinfection Guidance Manual table. Viruses need far higher doses."}
+
+tanks:
+  regrowth_log_per_day: {value: 0.10, unit: "log10/day", min: 0.0, max: 0.3, note: "ASSUMPTION: pure guess; UV leaves no residual disinfectant."}
+  regrowth_max_log: {value: 3.0, unit: "log10 CFU/mL", min: 1.0, max: 5.0, note: "ASSUMPTION: regrowth carrying capacity."}
+
+targets:
+  turbidity_max_ntu: {value: 2.0, unit: NTU, min: 0.1, max: 20, note: "PLACEHOLDER reuse target. Set from the guideline for your chosen reuse."}
+  ph_min: {value: 6.5, unit: pH, min: 5.0, max: 8.0, note: "PLACEHOLDER reuse target."}
+  ph_max: {value: 8.5, unit: pH, min: 7.0, max: 10.0, note: "PLACEHOLDER reuse target."}
+  tds_max_mgl: {value: 2000, unit: mg/L, min: 200, max: 5000, note: "PLACEHOLDER (verify: FAO irrigation guidelines if plants are watered)."}
+  bacteria_max_log: {value: 1.0, unit: "log10 CFU/mL", min: -2.0, max: 4.0, note: "PLACEHOLDER: 10 CFU/mL. Set from your reuse guideline."}
+
+simulation:
+  days: {value: 30, unit: days, min: 1, max: 365, note: "Simulated duration."}
+  dt_h: {value: 1.0, unit: h, min: 0.25, max: 1.0, note: "Time step."}
