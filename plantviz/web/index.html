@@ -5,6 +5,7 @@
 <body>
 <div class="bar">
   <div class="title">Treatment train <span id="mode"></span></div>
+  <div class="chips"><span class="chip" id="chipRO">RO</span><span class="chip" id="chipPump">Treatment pump</span><b id="clock"></b></div>
   <label>Colour water by
     <select id="colourMode">
       <option value="composite">Overall cleanliness</option>
@@ -15,6 +16,12 @@
   </label>
 </div>
 <svg id="stage" viewBox="0 0 1200 600" role="img" aria-label="Water treatment plant diagram"></svg>
+<div class="ctl">
+  <button id="back" aria-label="Back one hour">‹ 1 h</button><button id="play">Pause</button><button id="fwd" aria-label="Forward one hour">1 h ›</button>
+  <label>Speed <select id="speed"><option value="4">4 h/s</option><option value="12">12 h/s</option><option value="24" selected>24 h/s</option><option value="72">72 h/s</option></select></label>
+  <div class="track"><input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Time"><div id="ticks"></div></div>
+</div>
+<div class="evt" id="evt"></div>
 <p class="note">Colours encode the model's numbers relative to the raw reject water and are exaggerated for visibility. Red specks are bacteria (log scale), grey specks are turbidity.</p>
 <script>const DATA=/*DATA*/;</script>
 <script>/*JS*/</script>

@@ -86,7 +86,7 @@ with tab_over:
     st.caption(f"Scaling index (LSI): reject {ss['LSI'].iloc[0]:.2f}. Positive values indicate scale-forming water.")
 
 with tab_live:
-    render_plant(build_payload(cfg, build_train(cfg), ss))
+    render_plant(build_payload(cfg, build_train(cfg), ss, res))
 
 with tab_stage:
     st.dataframe(ss.round(3))

@@ -5,7 +5,7 @@ import json
 import pathlib
 
 WEB = pathlib.Path(__file__).resolve().parent / "web"
-JS_ORDER = ("layout.js", "colour.js", "units.js", "main.js")
+JS_ORDER = ("layout.js", "colour.js", "units.js", "data.js", "scene.js", "playback.js")
 
 
 def build_html(payload: dict) -> str:
