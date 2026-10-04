@@ -24,12 +24,15 @@ function build() {
   svg += `<path d="${sd}" stroke="${STEEL}" stroke-width="14"/><path id="coreS" d="${sd}" stroke-width="9"/><path id="flowS" class="flow" d="${sd}"/>` +
          `<text class="lbl" x="1150" y="${R2 + 5}">Demand</text>`;
   NODES.forEach(n => {
-    svg += `<g id="u-${n.id}"><title id="ti-${n.id}"></title>${UNITS[n.type](n, '#888')}</g>` +
+    svg += `<rect class="halo" id="h-${n.id}" x="${n.x - n.hw - 10}" y="${n.y - HALF_H - 10}" width="${n.hw * 2 + 20}" height="${HALF_H * 2 + 20}" rx="14"/>` +
+           `<g id="u-${n.id}" class="unit" tabindex="0" role="button" aria-label="Inspect ${n.label}"><title id="ti-${n.id}"></title>${UNITS[n.type](n, '#888')}` +
+           (n.id === 'equalisation' ? `<rect id="sludge" x="${n.x - n.hw + 3}" width="${n.hw * 2 - 6}" rx="3" fill="#5b4526"/>` : '') + `</g>` +
            `<text class="lbl" x="${n.x}" y="${n.y - HALF_H - 14}">${n.label}</text>` +
-           `<text class="val" id="a-${n.id}" x="${n.x}" y="${n.y + HALF_H + 22}"></text><text class="val" id="b-${n.id}" x="${n.x}" y="${n.y + HALF_H + 38}"></text>`;
+           `<text class="val" id="a-${n.id}" x="${n.x}" y="${n.y + HALF_H + 22}"></text><text class="val" id="b-${n.id}" x="${n.x}" y="${n.y + HALF_H + 38}"></text>` +
+           (TS && DATA.health[n.id] ? `<rect x="${n.x - 36}" y="${n.y + HALF_H + 46}" width="72" height="5" rx="2.5" fill="#1a2b34"/><rect id="hb-${n.id}" x="${n.x - 36}" y="${n.y + HALF_H + 46}" width="0" height="5" rx="2.5"/>` : '');
   });
   Object.entries(WASTE).forEach(([k, lab]) => {
-    svg += `<text class="waste" id="ws-${k}" x="${byId[k].x}" y="${byId[k].y + HALF_H + 54}" text-anchor="middle"></text>`;
+    svg += `<text class="waste" id="ws-${k}" x="${byId[k].x}" y="${byId[k].y + HALF_H + 68}" text-anchor="middle"></text>`;
   });
   svg += `<g transform="translate(980,60)"><text class="lbl" style="text-anchor:start" x="0" y="0">Water colour</text>` +
          `<rect x="0" y="12" width="170" height="12" rx="6" fill="url(#lg)"/>` +
@@ -60,11 +63,13 @@ function update(st) {
       g.querySelector('.surf').setAttribute('transform', `translate(0,${(0.7 - fr) * H2})`);
     }
     const a = $('a-' + n.id), b = $('b-' + n.id);
+    healthFx(n, g, st);
     if (n.id === 'ro') { a.textContent = st.ro_on ? 'running' : 'off'; b.textContent = `${Math.round(DATA.plant.ro_recovery * 100)}% recovery`; return; }
     const vol = st.litres && TANK_KEY[n.id] ? `${Math.round(st.litres[n.id])} L \u00b7 ` : '';
     a.textContent = TANK_KEY[n.id] && st.litres ? `${vol}${Math.round(100 * st.lvl[n.id])}%` : `${qq.flow_lph.toFixed(0)} L/h`;
     b.textContent = fmtQ(qq);
-    $('ti-' + n.id).textContent = `${n.label}\nFlow ${qq.flow_lph.toFixed(0)} L/h\n${fmtQ(qq)}`;
+    const h = st.health[n.id];
+    $('ti-' + n.id).textContent = `${n.label}\nFlow ${qq.flow_lph.toFixed(0)} L/h\n${fmtQ(qq)}` + (h ? `\n${h.label}: ${fmtH(h)}` : '');
   });
   PIPES.forEach(([a, b], i) => {
     const from = byId[a], w = W(from.src);
@@ -87,3 +92,22 @@ function update(st) {
 }
 const KEYS = Object.keys(TS ? DATA.series : DATA.quality);
 const PREV = Object.fromEntries(KEYS.map((k, i) => [k, KEYS[i - 1]]));
+
+const lerpC = (a, b, t) => css(mixRGB(a, b, clamp01(t)));
+const fmtH = h => h.relative ? `${h.val.toFixed(1)} ${h.unit} (${Math.round(100 * h.frac)}% of run peak)` : `${h.val.toFixed(h.unit === 'h' ? 0 : 2)} / ${h.limit} ${h.unit} (${Math.round(100 * h.frac)}% of limit)`;
+function healthFx(n, g, st) {
+  const h = st.health[n.id]; if (!h) return;
+  const f = clamp01(h.frac), set = (sel, attr, v) => g.querySelectorAll(sel).forEach(e => e.setAttribute(attr, v));
+  if (n.id === 'mmf') set('.hl', 'fill', lerpC([200, 181, 138], [84, 58, 28], f));
+  if (n.id === 'carbon') set('.hl', 'fill', lerpC([28, 34, 38], [100, 112, 120], f));
+  if (n.id === 'cartridge_5um' || n.id === 'candle_05um') set('.hl', 'fill', lerpC([223, 232, 234], [122, 90, 50], f));
+  if (n.id === 'uf') set('.hl', 'stroke', lerpC([169, 199, 210], [140, 100, 60], f));
+  if (n.id === 'uv') set('.hl', 'opacity', st.pump_on ? 1 - 0.55 * f : 0.18);
+  if (n.id === 'equalisation') { const hh = 22 * f, r = $('sludge'); r.setAttribute('height', hh); r.setAttribute('y', n.y + HALF_H - 3 - hh); }
+  const b = $('hb-' + n.id);
+  b.setAttribute('width', 72 * f); b.setAttribute('fill', f < 0.6 ? '#5fd09a' : f < 0.85 ? '#f0a93b' : '#ff6b6b');
+}
+function flashUnit(id, kind) {
+  const e = $('h-' + id); if (!e) return;
+  e.style.stroke = kind === 'warn' ? '#f0a93b' : '#7be0a0'; e.classList.remove('go'); void e.getBoundingClientRect(); e.classList.add('go');
+}

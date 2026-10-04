@@ -16,7 +16,7 @@ def build_html(payload: dict) -> str:
     return html.replace("/*CSS*/", css).replace("/*DATA*/", data).replace("/*JS*/", js)
 
 
-def render_plant(payload: dict, height: int = 660) -> None:
+def render_plant(payload: dict, height: int = 900) -> None:
     import streamlit.components.v1 as components
 
     components.html(build_html(payload), height=height, scrolling=False)

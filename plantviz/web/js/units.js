@@ -12,21 +12,21 @@ const UNITS = {
   vessel: (n, w) => body(n.x, n.y, n.hw * 2, HALF_H * 2, 14) +
     `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 4}" width="${n.hw * 2 - 8}" height="26" class="wt" fill="${w}"/>` +
     `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 30}" width="${n.hw * 2 - 8}" height="36" fill="#6b4f2a" opacity=".85"/>` +
-    `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 66}" width="${n.hw * 2 - 8}" height="30" fill="#c8b58a" opacity=".85"/>` +
+    `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 66}" width="${n.hw * 2 - 8}" height="30" class="hl" fill="#c8b58a" opacity=".85"/>` +
     `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 96}" width="${n.hw * 2 - 8}" height="30" class="wt" fill="${w}" opacity=".7"/>`,
   carbon: (n, w) => body(n.x, n.y, n.hw * 2, HALF_H * 2, 14) +
     `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 4}" width="${n.hw * 2 - 8}" height="22" class="wt" fill="${w}"/>` +
-    `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 26}" width="${n.hw * 2 - 8}" height="102" fill="#1c2226" rx="3"/>` +
+    `<rect x="${n.x - n.hw + 4}" y="${n.y - HALF_H + 26}" width="${n.hw * 2 - 8}" height="102" class="hl" fill="#1c2226" rx="3"/>` +
     [0, 1, 2, 3, 4].map(i => `<circle cx="${n.x - 20 + i * 10}" cy="${n.y - 30 + (i % 2) * 24 + i * 6}" r="3" fill="#39434a"/>`).join(''),
   cartridge: (n, w) => body(n.x, n.y, n.hw * 2, HALF_H * 2 - 10, 10) +
-    `<rect x="${n.x - 14}" y="${n.y - HALF_H + 14}" width="28" height="${HALF_H * 2 - 38}" rx="14" fill="#dfe8ea" opacity=".9"/>` +
+    `<rect x="${n.x - 14}" y="${n.y - HALF_H + 14}" width="28" height="${HALF_H * 2 - 38}" rx="14" class="hl" fill="#dfe8ea" opacity=".9"/>` +
     Array.from({length: 7}, (_, i) => `<line x1="${n.x - 14}" x2="${n.x + 14}" y1="${n.y - HALF_H + 26 + i * 14}" y2="${n.y - HALF_H + 26 + i * 14}" stroke="#9fb4ba"/>`).join('') +
     `<rect x="${n.x - n.hw + 3}" y="${n.y + HALF_H - 24}" width="${n.hw * 2 - 6}" height="14" class="wt" fill="${w}" rx="3"/>`,
   uf: (n, w) => body(n.x, n.y, n.hw * 2, HALF_H * 2, 14) +
-    Array.from({length: 7}, (_, i) => `<line x1="${n.x - 24 + i * 8}" x2="${n.x - 24 + i * 8}" y1="${n.y - HALF_H + 14}" y2="${n.y + HALF_H - 14}" stroke="${GLASS}" stroke-width="3" stroke-linecap="round" opacity=".8"/>`).join('') +
+    Array.from({length: 7}, (_, i) => `<line x1="${n.x - 24 + i * 8}" x2="${n.x - 24 + i * 8}" y1="${n.y - HALF_H + 14}" y2="${n.y + HALF_H - 14}" class="hl" stroke="${GLASS}" stroke-width="3" stroke-linecap="round" opacity=".8"/>`).join('') +
     `<rect x="${n.x - n.hw + 4}" y="${n.y + HALF_H - 22}" width="${n.hw * 2 - 8}" height="14" class="wt" fill="${w}" rx="3"/>`,
   uv: (n, w) => body(n.x, n.y, n.hw * 2, 56, 28) +
-    `<rect x="${n.x - n.hw + 8}" y="${n.y - 9}" width="${n.hw * 2 - 16}" height="18" rx="9" fill="#c9a8ff" opacity=".95"/>` +
+    `<rect x="${n.x - n.hw + 8}" y="${n.y - 9}" width="${n.hw * 2 - 16}" height="18" rx="9" class="hl" fill="#c9a8ff" opacity=".95"/>` +
     `<rect x="${n.x - n.hw + 8}" y="${n.y - 9}" width="${n.hw * 2 - 16}" height="18" rx="9" fill="none" stroke="#e9d9ff" stroke-width="2" opacity=".8"/>` +
     `<rect x="${n.x - n.hw - 4}" y="${n.y - 22}" width="${n.hw * 2 + 8}" height="44" rx="22" fill="none" class="wts" stroke="${w}" stroke-width="3" opacity=".7"/>`,
   ro: (n, w) => body(n.x, n.y, n.hw * 2, 70, 8) +

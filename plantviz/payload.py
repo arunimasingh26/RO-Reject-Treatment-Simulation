@@ -46,7 +46,7 @@ def build_payload(cfg, pipeline, steady, res=None, max_frames: int = 2000) -> di
         },
     }
     if res is not None:
-        out.update(_timeseries(res, keys, quality, max_frames))
+        out.update(_timeseries(res, keys, quality, max_frames, cfg))
     return out
 
 
@@ -54,7 +54,31 @@ def _arr(series, nd=3):
     return [round(float(v), nd) for v in series]
 
 
-def _timeseries(res, keys, steady_q, max_frames):
+# stage key -> (df column, label, unit, config path of its limit or None)
+HEALTH = {
+    "equalisation": ("equalisation.sludge_g", "Sludge held", "g", None),
+    "mmf": ("mmf.dp_bar", "Pressure drop", "bar", "stages.mmf.dp_limit_bar"),
+    "carbon": ("carbon.saturation", "Carbon used", "fraction", "stages.carbon.replace_at_saturation"),
+    "cartridge_5um": ("cartridge_5um.dp_bar", "Pressure drop", "bar", "stages.cartridge_5um.dp_limit_bar"),
+    "candle_05um": ("candle_05um.dp_bar", "Pressure drop", "bar", "stages.candle_05um.dp_limit_bar"),
+    "uf": ("uf.tmp_bar", "Transmembrane pressure", "bar", "stages.uf.tmp_limit_bar"),
+    "uv": ("uv.lamp_h", "Lamp hours", "h", "stages.uv.lamp_life_h"),
+}
+
+
+def _health(df, cfg):
+    out = {}
+    for k, (col, label, unit, lim) in HEALTH.items():
+        if col not in df:
+            continue
+        v = df[col].ffill().fillna(0)
+        peak = float(v.max())
+        limit = float(cfg(lim)) if lim else (peak if peak > 0 else 1.0)
+        out[k] = {"label": label, "unit": unit, "limit": round(limit, 4), "relative": lim is None, "values": _arr(v, 4)}
+    return out
+
+
+def _timeseries(res, keys, steady_q, max_frames, cfg):
     df = res.df
     stride = max(1, math.ceil(len(df) / max_frames))
     df = df.iloc[::stride].reset_index(drop=True)
@@ -79,4 +103,4 @@ def _timeseries(res, keys, steady_q, max_frames):
         series[k] = d
     ev = res.events
     events = [[round(float(r.t_h), 2), str(r.stage), str(r.event)] for r in ev.itertuples()]
-    return {"mode": "timeseries", "dt_h": dt, "frames": frames, "series": series, "events": events}
+    return {"mode": "timeseries", "dt_h": dt, "frames": frames, "series": series, "events": events, "health": _health(df, cfg)}

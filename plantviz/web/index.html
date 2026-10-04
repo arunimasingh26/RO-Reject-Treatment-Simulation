@@ -21,7 +21,10 @@
   <label>Speed <select id="speed"><option value="4">4 h/s</option><option value="12">12 h/s</option><option value="24" selected>24 h/s</option><option value="72">72 h/s</option></select></label>
   <div class="track"><input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Time"><div id="ticks"></div></div>
 </div>
-<div class="evt" id="evt"></div>
+<div class="panels">
+  <section><h3>Event log</h3><ol id="log"><li class="empty">No events yet</li></ol></section>
+  <section><h3 id="insTitle">Inspector</h3><div id="ins" class="empty">Click any unit to see what goes in and what comes out.</div></section>
+</div>
 <p class="note">Colours encode the model's numbers relative to the raw reject water and are exaggerated for visibility. Red specks are bacteria (log scale), grey specks are turbidity.</p>
 <script>const DATA=/*DATA*/;</script>
 <script>/*JS*/</script>
