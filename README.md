@@ -200,3 +200,23 @@ Python 3 with `numpy`, `pandas`, `matplotlib`, `pyyaml`, `streamlit` and `pytest
 Commit the whole repository, including the `plantviz/` folder with its `web/` subfolder, because
 the visual loads its HTML, CSS and JavaScript from those files at runtime. Point the app at
 `app.py`.
+
+## Screenshots
+
+Overview
+<img width="1916" height="917" alt="image" src="https://github.com/user-attachments/assets/c6001cdb-373f-4033-9874-77730cdf4d42" />
+
+Live plant
+<img width="1917" height="915" alt="image" src="https://github.com/user-attachments/assets/33d4d4c4-b48d-4c06-87a1-6d37a91824c2" />
+
+Per-stage quality
+<img width="1917" height="912" alt="image" src="https://github.com/user-attachments/assets/558a708e-9de9-4a2f-8b5d-8c70dff79be5" />
+
+Time-based
+<img width="1916" height="911" alt="image" src="https://github.com/user-attachments/assets/61f2df50-28f7-4d4b-86bd-4bce67a17022" />
+
+Sensitivity
+<img width="1917" height="912" alt="image" src="https://github.com/user-attachments/assets/5e4859f7-ce6b-4752-b13f-8ba0d1e3bf61" />
+
+Parameters
+<img width="1917" height="913" alt="image" src="https://github.com/user-attachments/assets/65ddcfa2-710a-40bf-81a4-6273c1fa97bc" />
