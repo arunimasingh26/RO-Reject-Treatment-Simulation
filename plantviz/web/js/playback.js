@@ -20,7 +20,11 @@ function frame(ts) {
   if (playing && lastTs !== null) { t += (ts - lastTs) / 1000 * speed; if (t > T1) t = T0; }
   lastTs = ts; render(); requestAnimationFrame(frame);
 }
-function syncBtn() { el('play').textContent = playing ? 'Pause' : 'Play'; }
+function syncBtn() {
+  el('play').textContent = playing ? 'Pause' : 'Play';
+  document.body.classList.toggle('paused', !playing);          // freezes the CSS flow highlights
+  if (stage.pauseAnimations) { playing ? stage.unpauseAnimations() : stage.pauseAnimations(); }  // freezes the specks
+}
 
 build();
 if (!TS) {
