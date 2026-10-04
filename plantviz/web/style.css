@@ -1,0 +1,17 @@
+:root{--bg:#0c1c24;--panel:#12303c;--steel:#3b5866;--ink:#d6e8ee;--dim:#8fb0bc;--warn:#f0a93b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,"Segoe UI",system-ui,sans-serif}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
+.title{font-size:15px;font-weight:600}
+.title span{font-weight:400;color:var(--dim);margin-left:8px;font-size:13px}
+label{font-size:13px;color:var(--dim)}
+select{background:var(--panel);color:var(--ink);border:1px solid var(--steel);border-radius:6px;padding:4px 8px;margin-left:6px;font:inherit}
+select:focus-visible{outline:2px solid #5fd0e8;outline-offset:2px}
+svg{width:100%;height:auto;display:block}
+.note{margin:4px 16px 12px;font-size:12px;color:var(--dim);max-width:78ch}
+.lbl{fill:var(--ink);font-size:13px;font-weight:600;text-anchor:middle}
+.val{fill:var(--dim);font-size:12px;text-anchor:middle;font-variant-numeric:tabular-nums}
+.waste{fill:var(--warn);font-size:12px;font-variant-numeric:tabular-nums}
+.flow{fill:none;stroke:#e9fbff;stroke-opacity:.55;stroke-width:2;stroke-dasharray:6 12;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+@media (prefers-reduced-motion:reduce){.flow{animation:none}}

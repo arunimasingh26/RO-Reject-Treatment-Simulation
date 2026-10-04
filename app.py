@@ -7,6 +7,7 @@ from rejectsim import Config, ConfigError, build_train, check_targets, run_time_
 from rejectsim.analysis import SENSITIVITY_METRICS, sensitivity
 from rejectsim.viz import fig_flow_diagram, fig_sensitivity, fig_stage_profile, fig_timeseries
 from rejectsim.water import WaterState
+from plantviz import build_payload, render_plant
 
 st.set_page_config(page_title="Dialysis RO-reject treatment simulation", layout="wide")
 st.title("Dialysis RO-reject water treatment: simulation")
@@ -61,8 +62,8 @@ except ConfigError as e:
 for w in res.warnings:
     st.warning(w)
 
-tab_over, tab_stage, tab_time, tab_sens, tab_params = st.tabs(
-    ["Overview", "Per-stage quality", "Time-based", "Sensitivity", "Parameters"])
+tab_over, tab_live, tab_stage, tab_time, tab_sens, tab_params = st.tabs(
+    ["Overview", "Live plant", "Per-stage quality", "Time-based", "Sensitivity", "Parameters"])
 
 s = res.summary
 with tab_over:
@@ -83,6 +84,9 @@ with tab_over:
     st.subheader("Treated water vs (placeholder) reuse targets")
     st.dataframe(check_targets(WaterState(**{k: last[k] for k in ss.columns if k != "LSI"}), cfg), hide_index=True)
     st.caption(f"Scaling index (LSI): reject {ss['LSI'].iloc[0]:.2f}. Positive values indicate scale-forming water.")
+
+with tab_live:
+    render_plant(build_payload(cfg, build_train(cfg), ss))
 
 with tab_stage:
     st.dataframe(ss.round(3))
